@@ -1,0 +1,26 @@
+name: Check Support Service
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Check service and synthetic AI response
+        env:
+          SUPPORT_INVITE: ${{ secrets.ANYU_SUPPORT_INVITE }}
+        run: |
+          node --input-type=module <<'JS'
+          const base='https://anyu-support-978239451.matthewsledgeef.chatgpt.site';
+          const h=await fetch(base+'/health'); console.log('Health status:',h.status);
+          if(!h.ok)process.exit(1);
+          console.log(await h.json());
+          const r=await fetch(base+'/api/support',{method:'POST',headers:{Authorization:'Bearer '+process.env.SUPPORT_INVITE,'Content-Type':'application/json',Origin:'https://songlin99.github.io'},body:JSON.stringify({mode:'feedback',text:'我因为排练评价有一点紧张，想获得支持。',profile:{reason:'comparison',goal:'calm'},context:{now:new Date().toISOString()}})});
+          console.log('Synthetic support status:',r.status);
+          if(!r.ok)process.exit(1);
+          console.log(await r.json());
+          JS

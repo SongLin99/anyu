@@ -1,0 +1,50 @@
+name: Build Android
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: android-actions/setup-android@v3
+      - run: npm ci
+      - run: npm run test:unit
+      - run: npm run build
+        env:
+          APP_BASE: /
+          VITE_SUPPORT_ENDPOINT: https://anyu-support-978239451.matthewsledgeef.chatgpt.site
+      - run: npx cap sync android
+      - name: Restore stable internal-test signing key
+        env:
+          KEYSTORE_B64: ${{ secrets.ANYU_ANDROID_KEYSTORE_B64 }}
+        run: |
+          mkdir -p "$HOME/.android"
+          printf '%s' "$KEYSTORE_B64" | base64 --decode > "$HOME/.android/debug.keystore"
+      - name: Build installable internal-test APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: anyu-android-internal-test
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Attach APK to tagged release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp android/app/build/outputs/apk/debug/app-debug.apk anyu-android-internal-test.apk
+          gh release create "$GITHUB_REF_NAME" anyu-android-internal-test.apk --title "安屿 $GITHUB_REF_NAME · 安卓内测版" --notes "成年舞蹈生恢复辅助原型。APK为内测调试签名版本，非应用商店发行版。个人记录默认存放在设备上，卸载前请导出加密备份。" --verify-tag
