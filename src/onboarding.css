@@ -1,0 +1,471 @@
+.onboarding-detailed .onboard-card {
+  max-width: 590px;
+}
+.onboard-small-mascot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  margin: -13px 0 4px;
+}
+.onboard-small-mascot span {
+  color: #82916e;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+.onboarding-detailed .onboard-card h1 {
+  margin: 1px 0 10px;
+  font-size: 25px;
+}
+.onboarding-detailed .onboard-card > .desc {
+  max-width: 450px;
+  font-size: 12px;
+  margin-bottom: 20px;
+}
+.term-guide {
+  margin: 0 auto 24px;
+}
+.term-guide-caption {
+  color: #7c8d6b;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin: 4px 0 15px;
+}
+.term-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.term-card {
+  background: #f0f4e7;
+  border: 1px solid #dfe7d1;
+  border-radius: 22px;
+  padding: 22px 16px 18px;
+}
+.term-card.peach {
+  background: #f9ede4;
+  border-color: #ecdccc;
+}
+.term-icon {
+  display: grid;
+  place-items: center;
+  width: 55px;
+  height: 55px;
+  margin: 0 auto 14px;
+  background: #e0e9cf;
+  color: #718a53;
+  border-radius: 19px;
+}
+.term-card.peach .term-icon {
+  background: #efddce;
+  color: #ae8566;
+}
+.term-card h2 {
+  font-size: 19px;
+  margin-bottom: 8px;
+}
+.term-card p {
+  color: #7d8e6b;
+  font-size: 12px;
+  line-height: 1.9;
+}
+.term-card.peach p {
+  color: #9a806d;
+}
+.term-arrow {
+  color: #97a783;
+  margin: 13px auto;
+  display: block;
+}
+.term-card.peach .term-arrow {
+  color: #bd9a7d;
+}
+.term-alias {
+  padding: 11px 6px;
+  border-radius: 13px;
+  background: #fffdf6d9;
+}
+.term-alias small {
+  display: block;
+  color: #8b977d;
+  font-size: 10px;
+  margin-bottom: 5px;
+}
+.term-alias strong {
+  color: #5c7548;
+  font-size: 16px;
+  font-weight: 600;
+}
+.term-card.peach .term-alias strong {
+  color: #9f795c;
+}
+.term-footnote {
+  font-size: 11px;
+  color: #7e8c70;
+  line-height: 1.9;
+  margin: 15px auto 0;
+  max-width: 430px;
+}
+.dance-study {
+  background: #fffef9;
+  border: 1px solid #e3e7d9;
+  border-radius: 23px;
+  padding: 22px;
+  margin: 0 auto 25px;
+  text-align: left;
+  box-shadow: 0 7px 30px #697e5305;
+}
+.study-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 17px;
+  border-bottom: 1px dashed #e1e5d5;
+}
+.study-book {
+  display: grid;
+  place-items: center;
+  min-width: 38px;
+  height: 38px;
+  border-radius: 13px;
+  background: #eef2e2;
+  color: #8b9c72;
+}
+.study-header strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #63764e;
+}
+.study-header small {
+  display: block;
+  font-size: 10px;
+  color: #879675;
+  margin-top: 6px;
+  line-height: 1.6;
+}
+.study-sample {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 17px 0 13px;
+  color: #7b8b6b;
+  font-size: 12px;
+}
+.study-sample b {
+  color: #627a4e;
+  font-weight: 600;
+}
+.study-sample small {
+  font-size: 10px;
+  color: #93a080;
+}
+.study-people {
+  display: grid;
+  grid-template-columns: repeat(19, minmax(0, 1fr));
+  gap: 5px 4px;
+}
+.study-person {
+  height: 26px;
+  width: 100%;
+}
+.study-person.calm {
+  color: #c6d6b0;
+}
+.study-person.lilac {
+  color: #b9b4d0;
+}
+.study-person.peach {
+  color: #dfb69a;
+}
+.study-legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 7px;
+  font-size: 10px;
+  color: #819071;
+  margin: 13px 0 18px;
+}
+.study-legend span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.study-legend i {
+  width: 6px;
+  min-width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.study-legend .calm {
+  background: #c6d6b0;
+}
+.study-legend .lilac {
+  background: #b9b4d0;
+}
+.study-legend .peach {
+  background: #dfb69a;
+}
+.study-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.study-metric {
+  padding: 17px 12px 15px;
+  border-radius: 16px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.study-metric.lilac {
+  background: #f1eef6;
+}
+.study-metric.peach {
+  background: #faeee3;
+}
+.study-metric-icon {
+  display: block;
+  font-size: 21px;
+  margin-bottom: 3px;
+}
+.study-metric > strong {
+  color: #8a82a6;
+  font-size: 31px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.study-metric.peach > strong {
+  color: #b38b6a;
+}
+.study-metric > strong small {
+  font-size: 16px;
+  margin-left: 3px;
+  font-weight: 400;
+}
+.study-metric h2 {
+  font-size: 12px;
+  color: #796f91;
+  margin: 5px 0;
+}
+.study-metric.peach h2 {
+  color: #a17c5f;
+}
+.study-metric p {
+  font-size: 11px;
+  color: #887f98;
+  line-height: 1.8;
+}
+.study-metric.peach p {
+  color: #a18a75;
+}
+.study-kind-note {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: #7c8d6b;
+  padding: 15px 0 10px;
+}
+.study-kind-note svg {
+  min-width: 14px;
+}
+.study-limit {
+  font-size: 10.5px;
+  line-height: 1.9;
+  color: #7c896e;
+  background: #f4f6eb;
+  padding: 11px 13px;
+  border-radius: 11px;
+}
+.study-limit strong {
+  font-weight: 600;
+  color: #667b53;
+}
+.study-source {
+  margin-top: 14px;
+  padding-top: 13px;
+  border-top: 1px dashed #e3e7da;
+  font-size: 10px;
+  color: #8b947d;
+  line-height: 1.9;
+}
+.study-source > span,
+.study-source > a,
+.study-source > small {
+  display: block;
+}
+.study-source > a {
+  color: #6d805b;
+  text-underline-offset: 3px;
+}
+.study-source > small {
+  font-size: 9px;
+  margin-top: 3px;
+}
+.study-source .text-button {
+  margin-top: 5px;
+  font-size: 10px;
+}
+.onboarding-detailed .onboard-progress {
+  margin: 20px auto;
+}
+.reset-setting {
+  border-top: 1px dashed #e0e5d6;
+  padding-top: 17px;
+  margin-top: 5px;
+}
+.reset-setting h3 {
+  font-size: 13px;
+}
+.reset-setting p {
+  margin: 7px 0 11px;
+}
+.reset-button {
+  font-size: 12px;
+  color: #826e58;
+  background: #f8f0e6;
+  border-color: #eadccd;
+  width: 100%;
+}
+.reset-illustration {
+  text-align: center;
+  height: 90px;
+  margin-top: -17px;
+}
+.reset-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.reset-actions button {
+  flex: 1;
+  white-space: nowrap;
+  padding-left: 14px;
+  padding-right: 14px;
+}
+@media (max-width: 800px) {
+  .onboarding-detailed {
+    padding: 22px 18px 27px;
+  }
+  .onboarding-detailed .onboard-brand {
+    font-size: 11px;
+    letter-spacing: 3px;
+    margin-bottom: 13px;
+  }
+  .onboard-small-mascot {
+    margin-top: -14px;
+    height: 75px;
+  }
+  .onboard-small-mascot svg {
+    width: 82px;
+    height: 82px;
+  }
+  .onboarding-detailed .onboard-card h1 {
+    font-size: 23px;
+  }
+  .onboarding-detailed .onboard-card > .desc {
+    font-size: 12px;
+    max-width: 330px;
+    margin-bottom: 17px;
+  }
+  .term-pair {
+    gap: 11px;
+  }
+  .term-card {
+    padding: 20px 11px 14px;
+    border-radius: 18px;
+  }
+  .term-card h2 {
+    font-size: 18px;
+  }
+  .term-card p {
+    font-size: 11px;
+  }
+  .term-alias strong {
+    font-size: 14px;
+  }
+  .term-footnote {
+    font-size: 10.5px;
+  }
+  .dance-study {
+    padding: 17px 15px 14px;
+    border-radius: 19px;
+  }
+  .study-header {
+    gap: 8px;
+    padding-bottom: 13px;
+  }
+  .study-header strong {
+    font-size: 12px;
+  }
+  .study-header small {
+    font-size: 9px;
+  }
+  .study-book {
+    min-width: 33px;
+    height: 33px;
+    border-radius: 11px;
+  }
+  .study-sample {
+    margin-top: 13px;
+    font-size: 11px;
+  }
+  .study-sample small {
+    font-size: 9px;
+  }
+  .study-people {
+    gap: 5px 3px;
+  }
+  .study-person {
+    height: 22px;
+  }
+  .study-legend {
+    font-size: 9px;
+    gap: 4px;
+    margin: 10px 0 15px;
+  }
+  .study-legend span {
+    gap: 4px;
+  }
+  .study-legend i {
+    width: 5px;
+    min-width: 5px;
+    height: 5px;
+  }
+  .study-metrics {
+    gap: 9px;
+  }
+  .study-metric {
+    padding: 13px 5px 12px;
+  }
+  .study-metric > strong {
+    font-size: 29px;
+  }
+  .study-metric p {
+    font-size: 10px;
+  }
+  .study-metric h2 {
+    font-size: 11px;
+  }
+  .study-kind-note {
+    align-items: flex-start;
+    font-size: 10.5px;
+    gap: 6px;
+  }
+  .study-kind-note svg {
+    margin-top: 3px;
+  }
+  .study-source {
+    font-size: 9px;
+  }
+  .study-source > small {
+    font-size: 9px;
+  }
+}

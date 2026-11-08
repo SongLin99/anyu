@@ -34,6 +34,7 @@ import { LocalNotifications } from "@capacitor/local-notifications";
 import { Filesystem, Directory, Encoding } from "@capacitor/filesystem";
 import { Share } from "@capacitor/share";
 import { Mascot, Garden } from "./Mascot";
+import { DanceStudyCard, TermGuide, studyCitation } from "./OnboardingVisuals";
 import {
   cardFor,
   dayKey,
@@ -75,6 +76,7 @@ type Modal =
   | "backup"
   | "import"
   | "cycle"
+  | "reset"
   | null;
 type InstallEvent = Event & {
   prompt: () => Promise<void>;
@@ -212,6 +214,41 @@ export default function App() {
     controllers.current.clear();
     setChatBusy(false);
   };
+  async function resetApp() {
+    setBusy(true);
+    invalidate();
+    let reminderWarning = false;
+    try {
+      if (Capacitor.isNativePlatform()) {
+        try {
+          await LocalNotifications.cancel({ notifications: [{ id: 1001 }] });
+        } catch {
+          reminderWarning = true;
+        }
+      }
+      await eraseState();
+      setState(initialState());
+      setChatText("");
+      setEditing(null);
+      setNote("");
+      setBackupPassword("");
+      setBackupText("");
+      setSelectedDay(dayKey(new Date()));
+      setMonth(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+      lastReminder.current = "";
+      setModal(null);
+      changePage("home");
+      notify(
+        reminderWarning
+          ? "已重置，请在系统设置中核对是否仍有旧提醒。"
+          : "已重新开始，按自己的节奏认识这里。",
+      );
+    } catch {
+      notify("暂时未能完成重置，原有记录仍保留，请稍后重试。");
+    } finally {
+      setBusy(false);
+    }
+  }
   const deleteEntry = (id: string) => {
     if (!window.confirm("删除这条记录？相关的小屿反馈也会从共享记忆移除。"))
       return;
@@ -529,6 +566,50 @@ export default function App() {
     Exclude<Modal, "record" | "backup" | "import" | null>,
     { title: string; body: ReactNode }
   > = {
+    reset: {
+      title: "重新开始引导",
+      body: (
+        <div className="stack">
+          <div className="reset-illustration">
+            <Mascot size={115} />
+          </div>
+          <p>重置后，会像第一次打开安屿一样，从欢迎页和两道选择题重新开始。</p>
+          <div className="note-box warning">
+            将清空本设备的目标、计划、记录、聊天、AI授权与邀请码，并关闭已设置的提醒。已经导出的备份不会被删除；已发送给第三方的信息无法通过重置撤回。
+          </div>
+          <p className="legal">
+            如果想保留经历，可以先导出加密备份，再回来重置。
+          </p>
+          <button
+            className="secondary"
+            disabled={busy}
+            onClick={() => {
+              setBackupPassword("");
+              setModal("backup");
+            }}
+          >
+            <Download size={16} />
+            先备份我的记录
+          </button>
+          <div className="reset-actions">
+            <button
+              className="secondary"
+              disabled={busy}
+              onClick={() => setModal(null)}
+            >
+              先保留现状
+            </button>
+            <button
+              className="primary"
+              disabled={busy}
+              onClick={() => void resetApp()}
+            >
+              {busy ? "正在重置…" : "确认清空并重新开始"}
+            </button>
+          </div>
+        </div>
+      ),
+    },
     breathe: {
       title: "让此刻慢一点",
       body: (
@@ -694,6 +775,16 @@ export default function App() {
             薛晶晶等（2025）调查了北京舞蹈学院80名学生，其中女生57名、男生23名。研究报告进食态度和限制性进食结果，没有单独报告催吐人数，也没有评估本
             App 的效果。
           </div>
+          <div className="note-box">
+            其中57名女生中：16人（28.1%）EAT-26得分0–10分；24人（42.1%）得分11–19分，被作者划为“进食障碍症状”分组；17人（29.8%）得分≥20分，被作者划为“可能厌食症或贪食症”分组。这是筛查，不是临床确诊。
+          </div>
+          <p className="legal">
+            {studyCitation.authors}：《{studyCitation.title}》，
+            {studyCitation.journal}。<br />
+            <a href={studyCitation.url} target="_blank" rel="noreferrer">
+              查看研究来源（DOI）↗
+            </a>
+          </p>
           <p>进食障碍可以获得帮助和治疗。恢复可能需要时间，不必独自承担。</p>
           <div className="inline-links">
             <a
@@ -2104,30 +2195,24 @@ export default function App() {
                     >
                       清空聊天与AI反馈
                     </button>
-                    <button
-                      className="text-button"
-                      style={{ color: "#a47b67" }}
-                      onClick={async () => {
-                        if (
-                          window.confirm(
-                            "删除本设备全部记录、聊天和目标？此操作无法撤销，请先备份。",
-                          )
-                        ) {
-                          invalidate();
-                          await eraseState();
-                          setState(initialState());
-                          changePage("home");
-                          notify("本设备数据已删除。");
-                        }
-                      }}
-                    >
-                      删除本设备所有数据
-                    </button>
+                    <div className="reset-setting">
+                      <h3>想从第一步重新认识安屿？</h3>
+                      <p className="legal">
+                        清空本机记录与设置，重新进入欢迎页。重置前可以先备份。
+                      </p>
+                      <button
+                        className="secondary reset-button"
+                        onClick={() => setModal("reset")}
+                      >
+                        <Leaf size={15} />
+                        重新开始引导（重置App）
+                      </button>
+                    </div>
                   </div>
                 </section>
                 <section className="card">
                   <div className="row between">
-                    <span className="legal">安屿 1.0 · 成年舞蹈生支持原型</span>
+                    <span className="legal">安屿 1.0.2 · 成年舞蹈生支持原型</span>
                     <Leaf size={16} />
                   </div>
                   <div className="inline-links" style={{ marginTop: 12 }}>
@@ -2195,6 +2280,9 @@ function Onboarding({
     [reason, setReason] = useState(""),
     [goal, setGoal] = useState(""),
     [adult, setAdult] = useState(false);
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [step]);
   const slides = [
     {
       title: (
@@ -2209,12 +2297,22 @@ function Onboarding({
     {
       title: (
         <>
-          有进食困扰的舞蹈生，
+          先把称呼说清楚，
           <br />
-          不只有你。
+          再一起慢慢走。
         </>
       ),
-      desc: "这些困扰值得被认真对待，不代表你不够自律。你不需要先证明自己足够严重，才值得获得支持。",
+      desc: "这里说的“冲动”和“风浪”，都与催吐有关。让我们先把两个入口对应起来。",
+    },
+    {
+      title: (
+        <>
+          这份困扰，
+          <br />
+          值得被认真看见。
+        </>
+      ),
+      desc: "一项舞蹈专业学生调查，让一些不容易说出口的进食困扰被看见。我们一起看看研究里的真实数字。",
     },
     {
       title: (
@@ -2228,22 +2326,37 @@ function Onboarding({
     },
   ];
   return (
-    <main className="onboarding">
+    <main
+      className={
+        "onboarding " + (step === 1 || step === 2 ? "onboarding-detailed" : "")
+      }
+    >
       <div className="onboard-card">
         <div className="onboard-brand">安 屿 · A LITTLE SAFE PLACE</div>
-        {step < 3 ? (
+        {step < 4 ? (
           <>
-            <div className="onboard-visual">
-              <Mascot size={230} variant={step === 0 ? "rest" : "hello"} />
-            </div>
+            {step === 0 || step === 3 ? (
+              <div className="onboard-visual">
+                <Mascot size={230} variant={step === 0 ? "rest" : "hello"} />
+              </div>
+            ) : (
+              <div className="onboard-small-mascot">
+                <Mascot size={90} />
+                <span>
+                  {step === 1 ? "温柔的称呼，清楚的含义" : "你不必独自承担"}
+                </span>
+              </div>
+            )}
             <h1>{slides[step].title}</h1>
             <p className="desc">{slides[step].desc}</p>
+            {step === 1 && <TermGuide />}
+            {step === 2 && <DanceStudyCard onDetails={onEvidence} />}
             <div className="onboard-progress">
               {slides.map((_, i) => (
                 <i className={i === step ? "active" : ""} key={i} />
               ))}
             </div>
-            {step === 2 && (
+            {step === 3 && (
               <label className="consent-line">
                 <input
                   type="checkbox"
@@ -2260,27 +2373,30 @@ function Onboarding({
             )}
             <button
               className="primary"
-              disabled={step === 2 && !adult}
+              disabled={step === 3 && !adult}
               onClick={() => setStep(step + 1)}
             >
-              {step === 2 ? "找到我的起步方向" : "继续，慢慢认识这里"}
+              {step === 3 ? "找到我的起步方向" : "继续，慢慢认识这里"}
               <ArrowRight size={16} />
             </button>
-            {step === 1 && (
-              <button className="onboard-help" onClick={onEvidence}>
-                了解这句话的研究依据 ↗
+            {step > 0 && (
+              <button
+                className="onboard-help"
+                onClick={() => setStep(step - 1)}
+              >
+                ← 返回上一页
               </button>
             )}
           </>
         ) : (
           <>
             <span className="eyebrow">
-              {step === 3
+              {step === 4
                 ? "FIRST, UNDERSTAND YOU"
                 : "A SMALL WISH FOR YOURSELF"}
             </span>
             <h1>
-              {step === 3 ? (
+              {step === 4 ? (
                 <>
                   冲动出现时，
                   <br />
@@ -2295,19 +2411,19 @@ function Onboarding({
               )}
             </h1>
             <p className="desc">
-              {step === 3
+              {step === 4
                 ? "选择现在最主要的一种就好。没有正确答案，以后也能修改。"
                 : "把愿望放小一点，按自己愿意的节奏走。"}
             </p>
             <div className="option-list">
-              {(step === 3 ? reasons : goals).map((o) => (
+              {(step === 4 ? reasons : goals).map((o) => (
                 <button
                   key={o.id}
                   className={
                     "option " +
-                    ((step === 3 ? reason : goal) === o.id ? "active" : "")
+                    ((step === 4 ? reason : goal) === o.id ? "active" : "")
                   }
-                  onClick={() => (step === 3 ? setReason(o.id) : setGoal(o.id))}
+                  onClick={() => (step === 4 ? setReason(o.id) : setGoal(o.id))}
                 >
                   <span className="option-emoji">{o.icon}</span>
                   <span>
@@ -2328,12 +2444,12 @@ function Onboarding({
               </button>
               <button
                 className="primary"
-                disabled={step === 3 ? !reason : !goal}
+                disabled={step === 4 ? !reason : !goal}
                 onClick={() =>
-                  step === 3 ? setStep(4) : onComplete(reason, goal)
+                  step === 4 ? setStep(5) : onComplete(reason, goal)
                 }
               >
-                {step === 3 ? "继续，选一个小愿望" : "开启我的小小计划"}
+                {step === 4 ? "继续，选一个小愿望" : "开启我的小小计划"}
                 <ArrowRight size={16} />
               </button>
             </div>
