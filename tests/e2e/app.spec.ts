@@ -100,4 +100,17 @@ test("mobile layout and encrypted backup", async ({ page }) => {
   for await (const chunk of stream!) text += chunk.toString();
   expect(text).not.toContain("comparison");
   expect(JSON.parse(text).format).toBe("anyu-backup-v1");
+  await page.getByLabel("希望先实现的变化").selectOption("kind");
+  await page.getByRole("button", { name: "恢复加密备份" }).click();
+  await page
+    .locator("input[type=file]")
+    .setInputFiles({
+      name: "backup.anyu",
+      mimeType: "application/json",
+      buffer: Buffer.from(text),
+    });
+  await page.getByLabel("备份密码").fill("testing-password-2026");
+  page.once("dialog", (d) => d.accept());
+  await page.getByRole("button", { name: "解密并恢复" }).click();
+  await expect(page.getByLabel("希望先实现的变化")).toHaveValue("calm");
 });
