@@ -18,6 +18,7 @@ export type Message = {
   at: string;
   source?: "ai" | "card";
   entryId?: string;
+  contextEntryIds?: string[];
 };
 export type Profile = {
   reason: string;
@@ -25,6 +26,13 @@ export type Profile = {
   startedAt: string;
   name: string;
 };
+export function pruneMessages(messages: Message[], entryIds: string[]) {
+  return messages.filter(
+    (m) =>
+      !entryIds.includes(m.entryId || "") &&
+      !m.contextEntryIds?.some((id) => entryIds.includes(id)),
+  );
+}
 export type Settings = {
   aiConsent: boolean;
   endpoint: string;

@@ -6,6 +6,7 @@ import {
   goals,
   planFor,
   cardFor,
+  pruneMessages,
   type Entry,
 } from "../src/domain";
 const entry = (kind: Entry["kind"], id: string): Entry => ({
@@ -47,3 +48,31 @@ test("editing one record does not duplicate it", () => {
 });
 test("backfilled feedback does not pretend it just happened", () =>
   assert.match(cardFor(entry("wave", "w")), /补上那天/));
+test("deleting a source also removes AI messages derived from that source", () => {
+  const messages = [
+    {
+      id: "direct",
+      role: "assistant" as const,
+      content: "record feedback",
+      at: "2026-01-01",
+      entryId: "w",
+    },
+    {
+      id: "derived",
+      role: "assistant" as const,
+      content: "derived memory",
+      at: "2026-01-01",
+      contextEntryIds: ["w"],
+    },
+    {
+      id: "independent",
+      role: "user" as const,
+      content: "my own words",
+      at: "2026-01-01",
+    },
+  ];
+  assert.deepEqual(
+    pruneMessages(messages, ["w"]).map((m) => m.id),
+    ["independent"],
+  );
+});

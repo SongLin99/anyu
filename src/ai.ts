@@ -53,6 +53,13 @@ export async function requestSupport(
           .filter(
             (m) => !m.entryId || state.entries.some((e) => e.id === m.entryId),
           )
+          .filter(
+            (m) =>
+              !m.contextEntryIds ||
+              m.contextEntryIds.every((id) =>
+                state.entries.some((e) => e.id === id),
+              ),
+          )
           .slice(-12)
           .map((m) => ({ role: m.role, content: m.content })),
       },

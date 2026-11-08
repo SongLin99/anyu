@@ -45,6 +45,7 @@ import {
   makeId,
   planFor,
   putEntry,
+  pruneMessages,
   reasons,
   stats,
   urgentText,
@@ -218,7 +219,7 @@ export default function App() {
     patch((s) => ({
       ...s,
       entries: s.entries.filter((e) => e.id !== id),
-      messages: s.messages.filter((m) => m.entryId !== id),
+      messages: pruneMessages(s.messages, [id]),
     }));
     notify("这条记录和相关反馈已移除。");
   };
@@ -267,12 +268,7 @@ export default function App() {
     const snapshot = {
       ...state,
       entries,
-      messages: [
-        ...state.messages.filter(
-          (m) => !m.entryId || !removedIds.includes(m.entryId),
-        ),
-        msg,
-      ],
+      messages: [...pruneMessages(state.messages, removedIds), msg],
     };
     setState(snapshot);
     setModal(isUrgent(e.note) ? "urgent" : null);
@@ -314,7 +310,14 @@ export default function App() {
           ),
           messages: s.messages.map((m) =>
             m.id === msg.id
-              ? { ...m, content: reply.text, source: reply.source }
+              ? {
+                  ...m,
+                  content: reply.text,
+                  source: reply.source,
+                  contextEntryIds: snapshot.entries
+                    .slice(0, 20)
+                    .map((e) => e.id),
+                }
               : m,
           ),
         };
@@ -361,6 +364,7 @@ export default function App() {
               content: reply.text,
               at: new Date().toISOString(),
               source: reply.source,
+              contextEntryIds: state.entries.slice(0, 20).map((e) => e.id),
             },
           ],
         }));
@@ -408,7 +412,11 @@ export default function App() {
                 id: 1001,
                 title: "给自己一小段时间",
                 body: "今天的小计划，可以按你的节奏来。",
-                schedule: { on: { hour, minute }, allowWhileIdle: true },
+                schedule: {
+                  on: { hour, minute },
+                  repeats: true,
+                  allowWhileIdle: true,
+                },
               },
             ],
           });
